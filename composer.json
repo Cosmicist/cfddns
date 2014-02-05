@@ -22,5 +22,6 @@
             "src/helpers.php"
         ]
     },
-    "bin": ["bin/cfddns"]
+    "bin": ["bin/cfddns"],
+    "minimum-stability": "dev"
 }
