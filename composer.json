@@ -1,0 +1,26 @@
+{
+    "name": "flatline/cfddns",
+    "description": "Updater to use CloudFlare as a dynamic DNS service",
+    "require": {
+        "php": ">=5.4",
+        "symfony/console": "2.4.*",
+        "symfony/config": "2.4.*",
+        "symfony/yaml": "2.4.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luciano Longo",
+            "email": "luciano.longo@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Flatline\\CfDdns\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "bin": ["bin/cfddns"]
+}

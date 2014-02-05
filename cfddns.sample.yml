@@ -1,0 +1,10 @@
+# Sample config file
+---
+cf:
+  api_key: your-cloudflare-api-key
+  email: your-cloudflare-email
+  domain: example.com
+  subdomain: home
+  # ttl: 1 # Optional. Default: 1
+  # service_mode: 0 # Optional. Default: 0
+# ip_service: http://icanhazip.com # Optional. Default: http://icanhazip.com

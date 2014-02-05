@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/../vendor/autoload.php';
+
+$config = new Flatline\CfDdns\Config\Config(
+        "cfddns.yml",
+        new Symfony\Component\Config\FileLocator([posix_getpwuid(posix_getuid())['dir']]),
+        new Symfony\Component\Config\Loader\LoaderResolver
+    );
+
+$app = new Flatline\CfDdns\Application(
+    $config->load(),
+    new Flatline\CfDdns\CloudFlare\Api\Request
+);
+$app->run();
