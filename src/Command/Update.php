@@ -7,6 +7,7 @@ class Update extends Command
 {
     protected $name = 'update';
     protected $description = 'Update cloudflare dns A record';
+    protected $init_request = true;
 
     protected function fire()
     {
