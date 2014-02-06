@@ -19,22 +19,9 @@ abstract class Command extends SfCommand
     /** @var ConfigInterface */
     protected $config;
 
-    /** @var RequestInterface */
-    protected $cfrequest;
-
-    /**
-     * Set to true if the command needs to initialize the request
-     *
-     * This also involves loading the config beforehand
-     *
-     * @var boolean
-     */
-    protected $init_request = false;
-
-    public function __construct(ConfigInterface $config, RequestInterface $cfrequest)
+    public function __construct(ConfigInterface $config)
     {
         $this->config = $config;
-        $this->cfrequest = $cfrequest;
 
         parent::__construct($this->name);
     }
@@ -72,21 +59,6 @@ abstract class Command extends SfCommand
         // Set input/output directly to the class
         $this->input = $input;
         $this->output = $output;
-
-        if ($this->init_request)
-        {
-            // Try to load the config
-            try {
-                $this->config->load();
-            } catch (\InvalidArgumentException $ex) {
-                $this->error($ex->getMessage()); exit;
-            }
-
-            // Initialize the CloudFlare request
-            $this->cfrequest->setToken($this->config['cf']['api_key']);
-            $this->cfrequest->setEmail($this->config['cf']['email']);
-        }
-
 
         $this->fire();
     }

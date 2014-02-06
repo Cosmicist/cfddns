@@ -3,11 +3,10 @@
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class Update extends Command
+class Update extends RequestCommand
 {
     protected $name = 'update';
     protected $description = 'Update cloudflare dns A record';
-    protected $init_request = true;
 
     protected function fire()
     {
