@@ -57,7 +57,6 @@ class Request implements RequestInterface
 
         if ($response->result == 'error')
         {
-            dd($this->url.http_build_query($params));
             return false;
         }
 
