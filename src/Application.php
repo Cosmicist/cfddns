@@ -23,6 +23,7 @@ class Application extends SfApplication
     {
         $commands = parent::getDefaultCommands();
 
+        $commands[] = new Command\Init($this->config);
         $commands[] = new Command\Update($this->config, $this->cfrequest);
 
         return $commands;
