@@ -17,7 +17,7 @@ $config = new Flatline\CfDdns\Config\Config(
 );
 
 $app = new Flatline\CfDdns\Application(
-    $config->load(),
+    $config,
     new Flatline\CfDdns\CloudFlare\Api\Request
 );
 $app->run();

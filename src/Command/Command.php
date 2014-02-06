@@ -1,5 +1,7 @@
 <?php namespace Flatline\CfDdns\Command;
 
+use Flatline\CfDdns\Config\ConfigInterface;
+use Flatline\CfDdns\CloudFlare\Api\RequestInterface;
 use Symfony\Component\Console\Command\Command as SfCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +15,20 @@ abstract class Command extends SfCommand
 
     /** @var OutputInterface */
     protected $output;
+
+    /** @var ConfigInterface */
+    protected $config;
+
+    /** @var RequestInterface */
+    protected $cfrequest;
+
+    public function __construct(ConfigInterface $config, RequestInterface $cfrequest)
+    {
+        $this->config = $config;
+        $this->cfrequest = $cfrequest;
+
+        parent::__construct($this->name);
+    }
 
     protected function configure()
     {
@@ -44,8 +60,20 @@ abstract class Command extends SfCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Set input/output directly to the class
         $this->input = $input;
         $this->output = $output;
+
+        // Try to load the config
+        try {
+            $this->config->load();
+        } catch (\InvalidArgumentException $ex) {
+            $this->error($ex->getMessage()); exit;
+        }
+
+        // Initialize the CloudFlare request
+        $this->cfrequest->setToken($this->config['cf']['api_key']);
+        $this->cfrequest->setEmail($this->config['cf']['email']);
 
         $this->fire();
     }

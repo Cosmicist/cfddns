@@ -1,7 +1,5 @@
 <?php namespace Flatline\CfDdns\Command;
 
-use Flatline\CfDdns\Config\ConfigInterface;
-use Flatline\CfDdns\CloudFlare\Api\RequestInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -9,17 +7,6 @@ class Update extends Command
 {
     protected $name = 'update';
     protected $description = 'Update cloudflare dns A record';
-
-    protected $config;
-    protected $cfrequest;
-
-    public function __construct(ConfigInterface $config, RequestInterface $cfrequest)
-    {
-        $this->config = $config;
-        $this->cfrequest = $cfrequest;
-
-        parent::__construct($this->name);
-    }
 
     protected function fire()
     {

@@ -55,6 +55,12 @@ class Request implements RequestInterface
 
         $response = json_decode(file_get_contents($this->url.http_build_query($params)));
 
+        if ($response->result == 'error')
+        {
+            dd($this->url.http_build_query($params));
+            return false;
+        }
+
         $recs = $response->response->recs->objs;
 
         foreach ($recs as $rec)
