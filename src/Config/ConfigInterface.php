@@ -10,6 +10,13 @@ interface ConfigInterface
     public function load();
 
     /**
+     * Check if the config was loaded
+     *
+     * @return ConfigInterface
+     */
+    public function loaded();
+
+    /**
      * Get the config array
      *
      * @return array
