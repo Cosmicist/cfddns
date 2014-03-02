@@ -18,8 +18,17 @@ $config = new Flatline\CfDdns\Config\Config(
 );
 $config->load();
 
-$app = new Flatline\CfDdns\Application(
+$app = new \Symfony\Component\Console\Application('CloudFlare DDNS');
+
+// Add Update command
+$app->add(new \Flatline\CfDdns\Command\Update(
     $config,
-    new Flatline\CfDdns\CloudFlare\Api\Request
-);
+    new \Flatline\CfDdns\CloudFlare\Api\Request,
+    new \Flatline\CfDdns\Service\Ip\IpService(
+        new \Flatline\CfDdns\Service\Ip\Providers\SimpleIpProvider(
+            $config->get('ip_service', 'http://icanhazip.com')
+        )
+    )
+));
+
 $app->run();
