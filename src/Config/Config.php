@@ -32,21 +32,23 @@ class Config implements ConfigInterface, \ArrayAccess
     public function load()
     {
         // Locate the config file wherever it may be
-        $resource = $this->locator->locate($this->config_filename, getcwd(), true);
+        try {
+            $resource = $this->locator->locate($this->config_filename, getcwd(), true);
 
-        // Add the Yml loader to the resolver
-        $this->resolver->addLoader(new Loader\YmlLoader($this->locator));
+            // Add the Yml loader to the resolver
+            $this->resolver->addLoader(new Loader\YmlLoader($this->locator));
 
-        // Try to resolve the locator resource
-        if ($loader = $this->resolver->resolve($resource)) {
-            // Load the found config file resource
-            $this->items = $loader->load($resource);
+            // Try to resolve the locator resource
+            if ($loader = $this->resolver->resolve($resource)) {
+                // Load the found config file resource
+                $this->items = $loader->load($resource);
 
-            // Mark as loaded
-            $this->loaded = true;
+                // Mark as loaded
+                $this->loaded = true;
 
-            return true;
-        }
+                return true;
+            }
+        } catch(\InvalidArgumentException $ex) {}
 
         return false;
     }
