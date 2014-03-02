@@ -24,10 +24,8 @@ abstract class RequestCommand extends Command
         $this->output = $output;
 
         // Try to load the config
-        try {
-            $this->config->load();
-        } catch (\InvalidArgumentException $ex) {
-            $this->error($ex->getMessage()); exit;
+        if (!$this->config->loaded()) {
+            $this->error("Couldn't find a config file"); exit;
         }
 
         // Initialize the CloudFlare request
