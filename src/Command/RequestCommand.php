@@ -37,10 +37,6 @@ abstract class RequestCommand extends Command
             $this->error("Couldn't find a config file"); exit;
         }
 
-        // Initialize the CloudFlare request
-        $this->cfrequest->setToken($this->config['cf']['api_key']);
-        $this->cfrequest->setEmail($this->config['cf']['email']);
-
         // Fire the command
         $this->fire();
     }
