@@ -113,7 +113,6 @@ class Config implements ConfigInterface, \ArrayAccess
      * Unset a config item using "dot" notation.
      *
      * @param  string  $key
-     * @param  mixed   $default
      * @return Config
      */
     public function remove($key)
