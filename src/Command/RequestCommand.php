@@ -2,17 +2,26 @@
 
 use Flatline\CfDdns\Config\ConfigInterface;
 use Flatline\CfDdns\CloudFlare\Api\RequestInterface;
+use Flatline\CfDdns\Service\Ip\IpService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class RequestCommand extends Command
 {
-    /** @var RequestInterface */
+    /**
+     * @var RequestInterface
+     */
     protected $cfrequest;
+    /**
+     * @var \Flatline\CfDdns\Service\Ip\IpService
+     */
+    protected $ipService;
 
-    public function __construct(ConfigInterface $config, RequestInterface $cfrequest)
+    public function __construct(ConfigInterface $config, RequestInterface $cfrequest, IpService $ipService)
     {
         $this->cfrequest = $cfrequest;
+
+        $this->ipService = $ipService;
 
         parent::__construct($config);
     }

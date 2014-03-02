@@ -18,7 +18,7 @@ class Update extends RequestCommand
         $ttl = $this->config->get('cf.ttl', 1);
 
         // Get current IP address
-        $ip = trim(file_get_contents($this->config->get('ip_service', 'http://icanhazip.com')));
+        $ip = $this->ipService->get();
 
         // Update record
         $rs = $this->cfrequest->edit($subdomain, $domain, $ip, $service_mode, $ttl);
