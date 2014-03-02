@@ -10,11 +10,13 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
 
 require $autoload;
 
+// Initialize config
 $config = new Flatline\CfDdns\Config\Config(
     "cfddns.yml",
     new Symfony\Component\Config\FileLocator([$user_home]),
     new Symfony\Component\Config\Loader\LoaderResolver
 );
+$config->load();
 
 $app = new Flatline\CfDdns\Application(
     $config,

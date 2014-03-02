@@ -2,11 +2,10 @@
 
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
-use Symfony\Component\Config\Exception\FileLoaderLoadException;
 
 class Config implements ConfigInterface, \ArrayAccess
 {
-    protected $config_file;
+    protected $config_filename;
 
     protected $locator;
 
@@ -16,14 +15,16 @@ class Config implements ConfigInterface, \ArrayAccess
 
     protected $items;
 
+    protected $loaded = false;
+
 
     public function __construct(
-        $config_file,
+        $config_filename,
         FileLocatorInterface $locator
       , LoaderResolverInterface $resolver
     )
     {
-        $this->config_file = $config_file;
+        $this->config_filename = $config_filename;
         $this->locator = $locator;
         $this->resolver = $resolver;
     }
@@ -31,20 +32,28 @@ class Config implements ConfigInterface, \ArrayAccess
     public function load()
     {
         // Locate the config file wherever it may be
-        $resource = $this->locator->locate($this->config_file, getcwd(), true);
+        $resource = $this->locator->locate($this->config_filename, getcwd(), true);
 
         // Add the Yml loader to the resolver
         $this->resolver->addLoader(new Loader\YmlLoader($this->locator));
 
         // Try to resolve the locator resource
-        if (false === $loader = $this->resolver->resolve($resource)) {
-            throw new FileLoaderLoadException($resource);
+        if ($loader = $this->resolver->resolve($resource)) {
+            // Load the found config file resource
+            $this->items = $loader->load($resource);
+
+            // Mark as loaded
+            $this->loaded = true;
+
+            return true;
         }
 
-        // Load the found config file resource
-        $this->items = $loader->load($resource);
+        return false;
+    }
 
-        return $this;
+    public function loaded()
+    {
+        return $this->loaded;
     }
 
     /**
