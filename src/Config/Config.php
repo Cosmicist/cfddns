@@ -2,31 +2,46 @@
 
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
+use Symfony\Component\Yaml\Dumper;
 
 class Config implements ConfigInterface, \ArrayAccess
 {
-    protected $config_filename;
-
-    protected $locator;
-
-    protected $resolver;
-
-    protected $loader;
-
     protected $items;
 
     protected $loaded = false;
+
+    /**
+     * @var
+     */
+    private $config_filename;
+
+    /**
+     * @var \Symfony\Component\Config\FileLocatorInterface
+     */
+    private $locator;
+
+    /**
+     * @var \Symfony\Component\Config\Loader\LoaderResolverInterface
+     */
+    private $resolver;
+
+    /**
+     * @var \Symfony\Component\Yaml\Dumper
+     */
+    private $dumper;
 
 
     public function __construct(
         $config_filename,
         FileLocatorInterface $locator
       , LoaderResolverInterface $resolver
+      , Dumper $dumper
     )
     {
         $this->config_filename = $config_filename;
         $this->locator = $locator;
         $this->resolver = $resolver;
+        $this->dumper = $dumper;
     }
 
     public function load()
@@ -58,6 +73,14 @@ class Config implements ConfigInterface, \ArrayAccess
         return $this->loaded;
     }
 
+    public function save($path)
+    {
+        if ($yml = $this->dumper->dump($this->items, 5)) {
+            file_put_contents("$path/{$this->config_filename}", $yml);
+            return true;
+        }
+    }
+
     /**
      * Get the config array
      *
@@ -66,6 +89,19 @@ class Config implements ConfigInterface, \ArrayAccess
     public function toArray()
     {
         return $this->items;
+    }
+
+    /**
+     * Set/Replace config items
+     *
+     * @param array $items
+     * @return $this
+     */
+    public function items(array $items)
+    {
+        $this->items = $items;
+
+        return $this;
     }
 
     /**
@@ -144,5 +180,28 @@ class Config implements ConfigInterface, \ArrayAccess
     public function offsetUnset($key)
     {
         $this->remove($key);
+    }
+
+    /**
+     * Get the config filename
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->config_filename;
+    }
+
+    /**
+     * Set the config filename
+     *
+     * @param string $config_filename
+     * @return $this
+     */
+    public function setFilename($config_filename)
+    {
+        $this->config_filename = basename($config_filename);
+
+        return $this;
     }
 }

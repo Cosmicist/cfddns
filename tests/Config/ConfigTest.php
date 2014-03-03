@@ -1,6 +1,7 @@
 <?php namespace Flatline\CfDdns\Config;
 
 use Mockery as m;
+use Symfony\Component\Yaml\Dumper;
 
 class ConfigTest extends \TestCase
 {
@@ -15,6 +16,11 @@ class ConfigTest extends \TestCase
     protected $resolver;
 
     /**
+     * @var m\Mock
+     */
+    protected $dumper;
+
+    /**
      * @var Config
      */
     protected $config;
@@ -24,6 +30,12 @@ class ConfigTest extends \TestCase
      */
     protected $configFilename;
 
+    /**
+     * @var array
+     */
+    protected $configArray = ['foo' => ['bar' => 'baz']];
+
+
     public function setUp()
     {
         $this->configFilename = "test.yml";
@@ -32,14 +44,12 @@ class ConfigTest extends \TestCase
 
         $this->resolver = m::mock('Symfony\Component\Config\Loader\LoaderResolverInterface');
 
-        $this->config = new Config($this->configFilename, $this->locator, $this->resolver);
+        $this->dumper = m::mock('Symfony\Component\Yaml\Dumper');
+
+        $this->config = new Config($this->configFilename, $this->locator, $this->resolver, $this->dumper);
 
         $loader = m::mock('Flatline\CfDdns\Config\Loader\YmlLoader');
-        $loader->shouldReceive('load')->andReturn([
-            'foo' => [
-                'bar' => 'baz'
-            ]
-        ]);
+        $loader->shouldReceive('load')->andReturn($this->configArray);
 
         $this->locator
             ->shouldReceive('locate')
@@ -54,6 +64,14 @@ class ConfigTest extends \TestCase
 
         $this->config->load();
     }
+
+    public function tearDown()
+    {
+        if (file_exists($f = $this->fixture('test.yml'))) {
+            unlink($f);
+        }
+    }
+
 
     public function testLoadConfig()
     {
@@ -89,5 +107,25 @@ class ConfigTest extends \TestCase
         ];
 
         $this->assertEquals($expected, $this->config->toArray());
+    }
+
+    public function testSetOrReplace()
+    {
+        $this->config->items(['foo' => 'bar']);
+
+        $this->assertEquals(['foo' => 'bar'], $this->config->toArray());
+    }
+
+    public function testSaveConfigFile()
+    {
+        $this->dumper->shouldReceive('dump')->withArgs([$this->configArray, 5])->once()->andReturn('foo: bar');
+
+        $configFilename = $this->fixture('test.yml');
+
+        $this->assertTrue($this->config->save($this->fixture('')));
+
+        $this->assertFileExists($configFilename);
+
+        $this->assertStringEqualsFile($configFilename, 'foo: bar');
     }
 } 

@@ -14,7 +14,8 @@ require $autoload;
 $config = new Flatline\CfDdns\Config\Config(
     "cfddns.yml",
     new Symfony\Component\Config\FileLocator([$user_home]),
-    new Symfony\Component\Config\Loader\LoaderResolver
+    new Symfony\Component\Config\Loader\LoaderResolver,
+    new Symfony\Component\Yaml\Dumper
 );
 $config->load();
 
@@ -30,5 +31,7 @@ $app->add(new \Flatline\CfDdns\Command\Update(
         )
     )
 ));
+
+$app->add(new Flatline\CfDdns\Command\Init($config, $user_home));
 
 $app->run();

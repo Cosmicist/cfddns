@@ -17,11 +17,27 @@ interface ConfigInterface
     public function loaded();
 
     /**
+     * Save config
+     *
+     * @param $path
+     * @return bool
+     */
+    public function save($path);
+
+    /**
      * Get the config array
      *
      * @return array
      */
     public function toArray();
+
+    /**
+     * Set/Replace config items
+     *
+     * @param array $items
+     * @return ConfigInterface
+     */
+    public function items(array $items);
 
     /**
      * Determine if the given configuration value exists.
@@ -35,7 +51,7 @@ interface ConfigInterface
      * Get a config item using "dot" notation.
      *
      * @param  string  $key
-     * @param  mixed   $default
+     * @param  mixed   $value
      * @return mixed
      */
     public function get($key, $value = null);
@@ -55,8 +71,22 @@ interface ConfigInterface
      * Unset a config item using "dot" notation.
      *
      * @param  string  $key
-     * @param  mixed   $default
      * @return ConfigInterface
      */
     public function remove($key);
+
+    /**
+     * Get the config filename
+     *
+     * @return string
+     */
+    public function getFilename();
+
+    /**
+     * Set the config filename
+     *
+     * @param string $config_filename
+     * @return ConfigInterface
+     */
+    public function setFilename($config_filename);
 }

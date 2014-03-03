@@ -65,43 +65,51 @@ abstract class Command extends SfCommand
 
     abstract protected function fire();
 
-    protected function getArguments()
+    public function getArguments()
     {
         return [];
     }
 
-    protected function getOptions()
+    public function getOptions()
     {
         return [];
     }
 
-    protected function getArgument($option)
+    public function getArgument($option)
     {
         return $this->input->getArgument($option);
     }
 
-    protected function getOption($option)
+    public function getOption($option)
     {
         return $this->input->getOption($option);
     }
 
-    protected function line($str)
+    public function line($str)
     {
         $this->output->writeln($str);
     }
 
-    protected function info($str)
+    public function info($str)
     {
         $this->line("<info>$str</info>");
     }
 
-    protected function comment($str)
+    public function comment($str)
     {
         $this->line("<comment>$str</comment>");
     }
 
-    protected function error($str)
+    public function error($str)
     {
         $this->line("<error>$str</error>");
+    }
+
+    public function ask($question, $default = null, array $autocomplete = null)
+    {
+        /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
+        $dialog = $this->getHelperSet()->get('dialog');
+
+        return $dialog->ask($this->output, "<question>$question</question> ", $default, $autocomplete);
     }
 }
