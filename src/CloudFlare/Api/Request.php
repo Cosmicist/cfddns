@@ -2,14 +2,15 @@
 
 class Request implements RequestInterface
 {
-    protected $url = 'https://www.cloudflare.com/api_json.html?';
+    protected $url;
     protected $token;
     protected $email;
 
-    public function __construct($token = null, $email = null)
+    public function __construct($token = null, $email = null, $api_url = 'https://www.cloudflare.com/api_json.html?')
     {
         $this->token = $token;
         $this->email = $email;
+        $this->url = $api_url;
     }
 
     public function setToken($token)
