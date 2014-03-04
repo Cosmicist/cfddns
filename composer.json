@@ -1,6 +1,7 @@
 {
     "name": "flatline/cfddns",
     "description": "Updater to use CloudFlare as a dynamic DNS service",
+    "keywords":["cloudflare", "ddns", "dns"],
     "require": {
         "php": ">=5.4",
         "symfony/console": "2.4.*",
