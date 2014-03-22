@@ -1,5 +1,6 @@
 <?php namespace Flatline\CfDdns\Command;
 
+use Flatline\CfDdns\Event\IpUpdateEvent;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -20,16 +21,35 @@ class Update extends RequestCommand
         // Get current IP address
         $ip = $this->ipService->get();
 
-        // Update record
-        $rs = $this->cfrequest->edit($subdomain, $domain, $ip, $service_mode, $ttl);
+        // Get current IP set in CloudFlare
+        $cfIp = $this->cfrequest->getIp($subdomain, $domain);
 
-        if ($rs->result != 'success')
+        if ($cfIp !== $ip)
         {
-            $this->error($rs->msg);
+            // Run user-defined commands
+            $this->runUserCommands($cfIp, $ip);
+
+            // Update record
+            $rs = $this->cfrequest->edit($subdomain, $domain, $ip, $service_mode, $ttl);
+
+            if ($rs->result != 'success')
+            {
+                $this->error($rs->msg);
+            }
+            else
+            {
+                $this->line("Updated host <comment>$subdomain.$domain</comment> A record to <comment>$ip</comment>");
+            }
         }
-        else
+    }
+
+    private function runUserCommands($oldIp, $newIp)
+    {
+        foreach ((array) $this->config['on_ip_update'] as $cmd)
         {
-            $this->line("Updated host <comment>$subdomain.$domain</comment> A record to <comment>$ip</comment>");
+            $cmd = str_replace(['{old_ip}', '{new_ip}'], [$oldIp, $newIp], $cmd);
+
+            exec($cmd);
         }
     }
 }
