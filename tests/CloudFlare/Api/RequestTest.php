@@ -25,4 +25,11 @@ class RequestTest extends \TestCase
 
         $this->assertEquals('success', $rs->result);
     }
+
+    public function testGetCurrentIp()
+    {
+        $rs = $this->request->getIp('foo', 'example.com');
+
+        $this->assertEquals('1.2.3.4', $rs);
+    }
 }

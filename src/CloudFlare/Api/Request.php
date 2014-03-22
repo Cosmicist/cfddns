@@ -43,25 +43,24 @@ class Request implements RequestInterface
         return $response;
     }
 
+    public function getIp($subdomain, $domain)
+    {
+        $host = "$subdomain.$domain";
+        $recs = $this->recLoadAll($domain);
+
+        foreach ($recs as $rec)
+        {
+            if ($rec->name == $host)
+            {
+                return $rec->content;
+            }
+        }
+    }
+
     public function getId($subdomain, $domain)
     {
-        $params = [
-            'a' => 'rec_load_all',
-            'tkn' => $this->token,
-            'email' => $this->email,
-            'z' => $domain,
-        ];
-
         $host = "$subdomain.$domain";
-
-        $response = json_decode(file_get_contents($this->url.http_build_query($params)));
-
-        if ($response->result == 'error')
-        {
-            return false;
-        }
-
-        $recs = $response->response->recs->objs;
+        $recs = $this->recLoadAll($domain);
 
         foreach ($recs as $rec)
         {
@@ -70,5 +69,29 @@ class Request implements RequestInterface
                 return $rec->rec_id;
             }
         }
+    }
+
+    /**
+     * Call rec_load_all
+     *
+     * @param $domain
+     * @return bool|array
+     */
+    private function recLoadAll($domain)
+    {
+        $params = [
+            'a' => 'rec_load_all',
+            'tkn' => $this->token,
+            'email' => $this->email,
+            'z' => $domain,
+        ];
+
+        $response = json_decode(file_get_contents($this->url . http_build_query($params)));
+
+        if ($response->result == 'error') {
+            return false;
+        }
+
+        return $response->response->recs->objs;
     }
 }

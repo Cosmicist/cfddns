@@ -9,4 +9,6 @@ interface RequestInterface
     public function edit($subdomain, $domain, $ip);
 
     public function getId($subdomain, $domain);
+
+    public function getIp($subdomain, $domain);
 }
